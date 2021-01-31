@@ -1,8 +1,15 @@
 defmodule Compounds.Datasets.AssayResult do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Compounds.Datasets.Compound
 
   schema "assay_results" do
+    field :operator, :string
+    field :result, :string
+    field :target, :string
+    field :unit, :string
+    field :value, :integer
+    belongs_to :compound, Compound
 
     timestamps()
   end
@@ -10,7 +17,7 @@ defmodule Compounds.Datasets.AssayResult do
   @doc false
   def changeset(assay_result, attrs) do
     assay_result
-    |> cast(attrs, [])
-    |> validate_required([])
+    |> cast(attrs, [:target, :result, :operator, :value, :unit])
+    |> validate_required([:target, :result, :operator, :value, :unit])
   end
 end

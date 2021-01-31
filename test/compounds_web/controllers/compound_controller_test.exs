@@ -5,12 +5,22 @@ defmodule CompoundsWeb.CompoundControllerTest do
   alias Compounds.Datasets.Compound
 
   @create_attrs %{
-
+    ALogP: "some ALogP",
+    image: "some image",
+    molecular_formula: 120.5,
+    molecular_weight: 120.5,
+    num_rings: 120.5,
+    smiles: "some smiles"
   }
   @update_attrs %{
-
+    ALogP: "some updated ALogP",
+    image: "some updated image",
+    molecular_formula: 456.7,
+    molecular_weight: 456.7,
+    num_rings: 456.7,
+    smiles: "some updated smiles"
   }
-  @invalid_attrs %{}
+  @invalid_attrs %{ALogP: nil, image: nil, molecular_formula: nil, molecular_weight: nil, num_rings: nil, smiles: nil}
 
   def fixture(:compound) do
     {:ok, compound} = Datasets.create_compound(@create_attrs)
@@ -36,7 +46,13 @@ defmodule CompoundsWeb.CompoundControllerTest do
       conn = get(conn, Routes.compound_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => id,
+               "ALogP" => "some ALogP",
+               "image" => "some image",
+               "molecular_formula" => 120.5,
+               "molecular_weight" => 120.5,
+               "num_rings" => 120.5,
+               "smiles" => "some smiles"
              } = json_response(conn, 200)["data"]
     end
 
@@ -56,7 +72,13 @@ defmodule CompoundsWeb.CompoundControllerTest do
       conn = get(conn, Routes.compound_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => id,
+               "ALogP" => "some updated ALogP",
+               "image" => "some updated image",
+               "molecular_formula" => 456.7,
+               "molecular_weight" => 456.7,
+               "num_rings" => 456.7,
+               "smiles" => "some updated smiles"
              } = json_response(conn, 200)["data"]
     end
 

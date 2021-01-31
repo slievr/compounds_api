@@ -11,6 +11,11 @@ defmodule CompoundsWeb.AssayResultView do
   end
 
   def render("assay_result.json", %{assay_result: assay_result}) do
-    %{id: assay_result.id}
+    %{id: assay_result.id,
+      target: assay_result.target,
+      result: assay_result.result,
+      operator: assay_result.operator,
+      value: assay_result.value,
+      unit: assay_result.unit}
   end
 end

@@ -5,12 +5,20 @@ defmodule CompoundsWeb.AssayResultControllerTest do
   alias Compounds.Datasets.AssayResult
 
   @create_attrs %{
-
+    operator: "some operator",
+    result: "some result",
+    target: "some target",
+    unit: "some unit",
+    value: 42
   }
   @update_attrs %{
-
+    operator: "some updated operator",
+    result: "some updated result",
+    target: "some updated target",
+    unit: "some updated unit",
+    value: 43
   }
-  @invalid_attrs %{}
+  @invalid_attrs %{operator: nil, result: nil, target: nil, unit: nil, value: nil}
 
   def fixture(:assay_result) do
     {:ok, assay_result} = Datasets.create_assay_result(@create_attrs)
@@ -36,7 +44,12 @@ defmodule CompoundsWeb.AssayResultControllerTest do
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => id,
+               "operator" => "some operator",
+               "result" => "some result",
+               "target" => "some target",
+               "unit" => "some unit",
+               "value" => 42
              } = json_response(conn, 200)["data"]
     end
 
@@ -56,7 +69,12 @@ defmodule CompoundsWeb.AssayResultControllerTest do
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "id" => id
+               "id" => id,
+               "operator" => "some updated operator",
+               "result" => "some updated result",
+               "target" => "some updated target",
+               "unit" => "some updated unit",
+               "value" => 43
              } = json_response(conn, 200)["data"]
     end
 
