@@ -5,7 +5,7 @@ defmodule CompoundsWeb.CompoundControllerTest do
   alias Compounds.Datasets.Compound
 
   @create_attrs %{
-    ALogP: "some ALogP",
+    alogp: "some ALogP",
     image: "some image",
     molecular_formula: 120.5,
     molecular_weight: 120.5,
@@ -13,14 +13,14 @@ defmodule CompoundsWeb.CompoundControllerTest do
     smiles: "some smiles"
   }
   @update_attrs %{
-    ALogP: "some updated ALogP",
+    alogp: "some updated ALogP",
     image: "some updated image",
     molecular_formula: 456.7,
     molecular_weight: 456.7,
     num_rings: 456.7,
     smiles: "some updated smiles"
   }
-  @invalid_attrs %{ALogP: nil, image: nil, molecular_formula: nil, molecular_weight: nil, num_rings: nil, smiles: nil}
+  @invalid_attrs %{alogp: nil, image: nil, molecular_formula: nil, molecular_weight: nil, num_rings: nil, smiles: nil}
 
   def fixture(:compound) do
     {:ok, compound} = Datasets.create_compound(@create_attrs)
@@ -41,12 +41,12 @@ defmodule CompoundsWeb.CompoundControllerTest do
   describe "create compound" do
     test "renders compound when data is valid", %{conn: conn} do
       conn = post(conn, Routes.compound_path(conn, :create), compound: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"compound_id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.compound_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "compound_id" => id,
                "ALogP" => "some ALogP",
                "image" => "some image",
                "molecular_formula" => 120.5,
@@ -67,12 +67,12 @@ defmodule CompoundsWeb.CompoundControllerTest do
 
     test "renders compound when data is valid", %{conn: conn, compound: %Compound{id: id} = compound} do
       conn = put(conn, Routes.compound_path(conn, :update, compound), compound: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"compound_id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.compound_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "compound_id" => id,
                "ALogP" => "some updated ALogP",
                "image" => "some updated image",
                "molecular_formula" => 456.7,

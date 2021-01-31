@@ -11,7 +11,7 @@ defmodule Compounds.Datasets.Compound do
     field :num_rings, :float
     field :smiles, :string
 
-    has_many :assay_results, AssayResult
+    has_many :assay_results, AssayResult, foreign_key: :compound_id
 
     timestamps()
   end

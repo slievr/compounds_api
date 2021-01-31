@@ -11,7 +11,7 @@ defmodule CompoundsWeb.CompoundView do
   end
 
   def render("compound.json", %{compound: compound}) do
-    %{id: compound.id,
+    %{compound_id: compound.id,
       smiles: compound.smiles,
       molecular_weight: compound.molecular_weight,
       ALogP: compound.alogp,

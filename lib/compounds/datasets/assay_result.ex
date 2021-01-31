@@ -9,7 +9,7 @@ defmodule Compounds.Datasets.AssayResult do
     field :target, :string
     field :unit, :string
     field :value, :integer
-    belongs_to :compound, Compound
+    belongs_to :compound, Compound, references: :compound_id
 
     timestamps()
   end

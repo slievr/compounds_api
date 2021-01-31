@@ -7,6 +7,10 @@ defmodule CompoundsWeb.Router do
 
   scope "/api", CompoundsWeb do
     pipe_through :api
+
+    resources("/compounds", CompoundController)
+    resources("/assay_results", AssayResultController)
+
   end
 
   # Enables LiveDashboard only for development

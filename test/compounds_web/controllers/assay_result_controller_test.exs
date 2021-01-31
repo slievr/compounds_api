@@ -39,12 +39,12 @@ defmodule CompoundsWeb.AssayResultControllerTest do
   describe "create assay_result" do
     test "renders assay_result when data is valid", %{conn: conn} do
       conn = post(conn, Routes.assay_result_path(conn, :create), assay_result: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"assay_result_id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "assay_result_id" => id,
                "operator" => "some operator",
                "result" => "some result",
                "target" => "some target",
@@ -62,14 +62,14 @@ defmodule CompoundsWeb.AssayResultControllerTest do
   describe "update assay_result" do
     setup [:create_assay_result]
 
-    test "renders assay_result when data is valid", %{conn: conn, assay_result: %AssayResult{id: id} = assay_result} do
+    test "renders assay_result when data is valid", %{conn: conn, assay_result: %{id: id} = assay_result} do
       conn = put(conn, Routes.assay_result_path(conn, :update, assay_result), assay_result: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"assay_result_id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "id" => id,
+               "assay_result_id" => id,
                "operator" => "some updated operator",
                "result" => "some updated result",
                "target" => "some updated target",
