@@ -20,6 +20,7 @@ defmodule Compounds.Datasets.Compound do
   def changeset(compound, attrs) do
     compound
     |> cast(attrs, [:smiles, :molecular_weight, :alogp, :molecular_formula, :num_rings, :image])
-    |> validate_required([:smiles, :molecular_weight, :alogp, :molecular_formula, :num_rings, :image])
+    |> cast_assoc(:assay_results, with: &AssayResult.changeset/2)
+    |> validate_required([:smiles])
   end
 end

@@ -6,7 +6,10 @@ defmodule Compounds.Datasets do
   import Ecto.Query, warn: false
   alias Compounds.Repo
 
-  alias Compounds.Datasets.Compound
+  alias Compounds.Datasets.{
+    Compound,
+    AssayResult
+  }
 
   @doc """
   Returns the list of compounds.
@@ -36,6 +39,23 @@ defmodule Compounds.Datasets do
 
   """
   def get_compound!(id), do: Repo.get!(Compound, id)
+
+  def get_compound_schema() do
+    Application.app_dir(:app_name, "priv/json_schema/schema.json")
+    |> File.read()
+    |> ExJsonSchema.Schema.resolve()
+  end
+
+  def is_valid_compound_schema?(%Compound{} = compound) do
+    ExJsonSchema.Validator.valid?(get_compound_schema(), compound)
+  end
+
+  def is_valid_compound_schema?(compound) when is_binary(compound) do
+    json = compound
+    |> Jason.decode!()
+
+    ExJsonSchema.Validator.valid?(get_compound_schema(), json)
+  end
 
   @doc """
   Creates a compound.
@@ -102,7 +122,6 @@ defmodule Compounds.Datasets do
     Compound.changeset(compound, attrs)
   end
 
-  alias Compounds.Datasets.AssayResult
 
   @doc """
   Returns the list of assay_results.
@@ -197,4 +216,5 @@ defmodule Compounds.Datasets do
   def change_assay_result(%AssayResult{} = assay_result, attrs \\ %{}) do
     AssayResult.changeset(assay_result, attrs)
   end
+
 end
