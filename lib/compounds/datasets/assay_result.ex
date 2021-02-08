@@ -8,8 +8,8 @@ defmodule Compounds.Datasets.AssayResult do
     field :result, :string
     field :target, :string
     field :unit, :string
-    field :value, :integer
-    belongs_to :compound, Compound, references: :compound_id
+    field :value, :float
+    belongs_to :compound, Compound, references: :id
 
     timestamps()
   end
@@ -17,7 +17,18 @@ defmodule Compounds.Datasets.AssayResult do
   @doc false
   def changeset(assay_result, attrs) do
     assay_result
-    |> cast(attrs, [:target, :result, :operator, :value, :unit])
+    |> cast(attrs, [:id, :target, :result, :operator, :value, :unit])
     |> validate_required([:target, :result, :operator, :value, :unit])
+  end
+
+  def normalise_keys(attrs) do
+    attrs
+    |> Enum.map( fn {k,v} ->
+      cond do
+        k === "result_id" -> { "id", v}
+        true -> {String.downcase(k),v}
+      end
+    end)
+    |> Enum.into(%{})
   end
 end

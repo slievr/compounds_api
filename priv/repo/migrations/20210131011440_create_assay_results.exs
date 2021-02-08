@@ -6,7 +6,7 @@ defmodule Compounds.Repo.Migrations.UpdateAssayResults do
       add :target, :string
       add :result, :string
       add :operator, :string
-      add :value, :integer
+      add :value, :float
       add :unit, :string
       add :compound_id, references(:compounds, column: :id)
 

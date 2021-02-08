@@ -25,8 +25,12 @@ defmodule Mix.Tasks.Compounds.SeedFromFile do
   end
 
   defp load_data(file_path) do
-    read_json_file(file_path)
-    |> insert_compound()
+    with data <- read_json_file(file_path),
+    true <- validate_data(data) do
+      insert_compound(data)
+    else
+      false -> IO.puts("invalid json")
+    end
   end
 
   defp read_json_file(file_data) do
@@ -35,25 +39,39 @@ defmodule Mix.Tasks.Compounds.SeedFromFile do
     |> String.replace("\r", "")
     |> String.replace("\n", "")
     |> String.replace("\t", "")
-    |> Jason.decode!()
+    |> remove_bom()
+    |> Poison.decode!()
   end
 
-  def insert_compound(compounds) when is_list(compounds) do
+  defp validate_data(compounds) do
     compounds
-    |> Enum.map(fn compound ->
-      compound_json_to_struct(compound)
-    end)
-    |> IO.inspect()
+    |> Datasets.is_valid_compound_schema?()
   end
 
-  def insert_compound(compound) do
-    compound_json_to_struct(compound)
-    |> IO.inspect()
+  defp insert_compound(compounds) do
+    compounds
+    |> Enum.map(&compound_json_to_struct/1)
+    |> Datasets.upsert_compound()
   end
 
-  def compound_json_to_struct(compound_json) do
+  defp compound_json_to_struct(compound_json) do
     %Compound{}
     |> Compound.changeset(compound_json)
   end
 
+  defp remove_bom(string) do
+    string |> String.replace("\uFEFF", "")
+  end
+
+  defp from_latin1(string) do
+    :unicode.characters_to_binary(string, :latin1)
+  end
+
+  defp from_utf16(string) do
+    :unicode.characters_to_binary(string, :utf16)
+  end
+
+  defp from_unicode(string) do
+    :unicode.characters_to_binary(string, :unicode)
+  end
 end

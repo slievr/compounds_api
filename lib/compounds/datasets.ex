@@ -21,7 +21,17 @@ defmodule Compounds.Datasets do
 
   """
   def list_compounds do
-    Repo.all(Compound)
+    compound_query()
+    |> Repo.all()
+    |> Repo.preload([:assay_results])
+  end
+
+  defp compound_query do
+    from(
+      c in Compound,
+      left_join: ar in AssayResult,
+      on: ar.compound_id == c.id
+    )
   end
 
   @doc """
@@ -41,20 +51,27 @@ defmodule Compounds.Datasets do
   def get_compound!(id), do: Repo.get!(Compound, id)
 
   def get_compound_schema() do
-    Application.app_dir(:app_name, "priv/json_schema/schema.json")
+    {:ok, schema} = Application.app_dir(:compounds, "priv/json_schema/schema.json")
     |> File.read()
-    |> ExJsonSchema.Schema.resolve()
-  end
 
-  def is_valid_compound_schema?(%Compound{} = compound) do
-    ExJsonSchema.Validator.valid?(get_compound_schema(), compound)
+    schema
+    |> Poison.decode!()
+    |> JsonXema.new()
   end
 
   def is_valid_compound_schema?(compound) when is_binary(compound) do
-    json = compound
-    |> Jason.decode!()
+    data = compound
+    |> Poison.decode!()
 
-    ExJsonSchema.Validator.valid?(get_compound_schema(), json)
+    JsonXema.valid?(get_compound_schema(), data)
+  end
+
+  def is_valid_compound_schema?(%Compound{} = compound) do
+    JsonXema.valid?(get_compound_schema(), compound)
+  end
+
+  def is_valid_compound_schema?(compounds) do
+    JsonXema.valid?(get_compound_schema(), compounds)
   end
 
   @doc """
@@ -93,6 +110,28 @@ defmodule Compounds.Datasets do
     |> Repo.update()
   end
 
+  @doc """
+  Upserts a compound.
+
+  ## Examples
+
+      iex> upsert_compound(compound, %{field: new_value})
+      {:ok, %Compound{}}
+
+      iex> upsert_compound(compound, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+
+  def upsert_compound([%{} | _rest] = compounds) when is_list(compounds) do
+    Repo.insert_all(Compound, compounds, on_conflict: :replace_all, conflict_target: :id)
+  end
+
+  def upsert_compound(attrs) do
+    %Compound{}
+    |> Compound.changeset(attrs)
+    |> Repo.insert_or_update()
+  end
   @doc """
   Deletes a compound.
 
