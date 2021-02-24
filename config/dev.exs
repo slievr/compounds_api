@@ -2,10 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :compounds, Compounds.Repo,
+  port: System.get_env("DB_PORT") || 5432,
   username: System.get_env("DB_USER") || "postgres",
   password: System.get_env("DB_PASS") || "postgres",
-  database:  System.get_env("DB_NAME") || "compounds_dev",
-  hostname:  System.get_env("DB_HOST") || "localhost",
+  database: System.get_env("DB_NAME") || "compounds_dev",
+  hostname: System.get_env("DB_HOST") || "localhost",
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

@@ -17,14 +17,15 @@ services:
   compounds:
     build:
       context: .
-      target: release
+      target: test
       args:
         SECRET_KEY_BASE: DeX0btDDaqwsqyAeQKBvsOyy9ckcrjaVq0JsRcYOR7Wrgyv0WRNekaK9CQ1bKZUv
     ports:
-      - 4000:4000
+      - 6000:4000
     depends_on:
       - postgres
     environment:
+      PORT: 4000
       DB_HOST: postgres
       DB_USER: postgres
       DB_PASS: postgres

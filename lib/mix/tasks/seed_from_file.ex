@@ -48,9 +48,12 @@ defmodule Mix.Tasks.Compounds.SeedFromFile do
 
   end
 
-  defp insert_compounds(compounds) do
+  defp insert_compounds(compounds) when is_list(compounds) do
     compounds
     |> Datasets.upsert_compound()
+    |> case do
+      {:ok, _} -> IO.puts('#{length(compounds)} Compounds inserted')
+    end
   end
 
   defp remove_bom(string) do

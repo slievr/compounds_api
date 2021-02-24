@@ -10,16 +10,7 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :compounds, CompoundsWeb.Endpoint,
-  url: [host: "example.com", port: 80],
-  cache_static_manifest: "priv/static/cache_manifest.json"
-
-config :compounds, Compounds.Repo,
-  adapter: Ecto.Adapters.Postgres,
-  username: System.get_env("DB_USER") || "postgres",
-  password: System.get_env("DB_PASS") || "postgres",
-  database:  System.get_env("DB_NAME") || "compounds",
-  hostname:  System.get_env("DB_HOST") || "localhost",
-  pool_size: 10
+  url: [host: "localhost", port: System.get_env("PORT") || 4000]
 
 # Do not print debug messages in production
 config :logger, level: :info
