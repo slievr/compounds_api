@@ -42,18 +42,20 @@ docker-compose -f docker-compose-test.yml up --exit-code-from compounds
 
 ## api
 
-A full list of api routes can be obtained by navigating to `/` on the web service.
+A full list of api routes can be obtained by navigating to `/` on the web service. While running the base/dev container.
 
 ## Seeding the database
 
 There are two methods of seeding the database, the first and easiest is the bulk endpoint `/api/bulk/compounds' It accepts a json body that conforms to the schema located at `priv/json_schema/compounds_schema.json`
 
-The second method of seeding the database is through a mix task this takes the form of 
+The second method of seeding the database is through a mix task this takes the form of
+
 ```
 mix Compounds.SeedFromFile --file {path to file}
 ```
 
-alternatively it can be run through docker using 
+alternatively it can be run through docker using
+
 ```
 docker build . --target seed --tag compound_seeder
 docker run \
@@ -67,8 +69,16 @@ docker run \
 --rm -it compound_seeder
 ```
 
+docker run \
+--env DB_USER=postgres \
+--env DB_PASS=postgres \
+--env DB_NAME=postgres \
+--env DB_HOST=localhost \
+--network=host
+--rm -it compounds
+
 Run the second command inside the directory that the compound files are in as it will be mounted to the container, and set the `SEED_FILE` env var to it's file name e.g. `compounds.json`
 
 ## assumptions
 
-I have forgone creating an images endpoint, as I would have used a CDN such as s3 or gcloud storage. 
+I have forgone creating an images endpoint, as I would have used a CDN such as s3 or gcloud storage.

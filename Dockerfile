@@ -1,16 +1,17 @@
-FROM bitwalker/alpine-elixir-phoenix:latest as base
-
-
-ARG SECRET_KEY_BASE
-
-ENV PORT 4000
-EXPOSE ${PORT}
+FROM elixir:1.11.3 as base
 
 WORKDIR /app
 COPY . /app
 
-ADD mix.exs mix.lock ./
-RUN mix do deps.get, deps.compile
+RUN mix local.hex --force \ 
+    && mix local.rebar --force \
+    && mix deps.get \
+    && mix compile
+
+EXPOSE 4000
+
+CMD ["./run.sh"]
+
 
 FROM base as test
 ENV MIX_ENV test
@@ -24,7 +25,7 @@ ENV MIX_ENV prod
 
 CMD ["./seed.sh"]
 
-FROM base as release
+FROM base as prod
 ENV MIX_ENV prod
 
 CMD ["./run.sh"]

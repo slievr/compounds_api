@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   postgres:
     image: postgres:latest
@@ -7,7 +7,7 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
-      
+
     ports:
       - 5432:5432
     deploy:
@@ -17,7 +17,7 @@ services:
   compounds:
     build:
       context: .
-      target: release
+      target: prod
       args:
         SECRET_KEY_BASE: DeX0btDDaqwsqyAeQKBvsOyy9ckcrjaVq0JsRcYOR7Wrgyv0WRNekaK9CQ1bKZUv
     ports:
@@ -31,4 +31,3 @@ services:
 
 volumes:
   postgres:
-    
