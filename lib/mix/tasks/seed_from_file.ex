@@ -1,8 +1,7 @@
 defmodule Mix.Tasks.Compounds.SeedFromFile do
  use Mix.Task
  alias Compounds.{
-   Datasets,
-   Datasets.Compound
+   Datasets
  }
 
   @shortdoc "Reads data from file to populate db"
