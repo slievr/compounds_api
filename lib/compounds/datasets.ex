@@ -48,30 +48,55 @@ defmodule Compounds.Datasets do
       ** (Ecto.NoResultsError)
 
   """
-  def get_compound!(id), do: Repo.get!(Compound, id)
+  def get_compound!(id), do: Repo.get!(Compound, id) |> Repo.preload([:assay_results])
 
-  def get_compound_schema() do
-    {:ok, schema} = Application.app_dir(:compounds, "priv/json_schema/schema.json")
-    |> File.read()
+  def validate_compound_schema(%Compound{} = compound) do
+    compound
+    |> Map.from_struct()
+    |> validate_compound_schema()
+  end
+
+  def validate_compound_schema(compound) when is_binary(compound) do
+    compound
+    |> Poison.decode!()
+    |> validate_compound_schema()
+  end
+
+  def validate_compound_schema(compounds) when is_list(compounds) do
+    compounds =
+      compounds
+      |> Enum.map(fn compound ->
+        compound |> map_to_string_keys()
+      end)
+
+    get_compound_schema()
+    |> JsonXema.validate(compounds)
+  end
+
+  def validate_compound_schema(compound) do
+    validate_compound_schema([compound])
+  end
+
+
+  defp map_to_string_keys(map) do
+    map
+    |> Enum.map(fn {k, v} ->
+      case is_atom(k) do
+        true -> {Atom.to_string(k), v}
+        false -> {k, v}
+      end
+    end)
+    |> Enum.into(%{})
+  end
+
+  defp get_compound_schema() do
+    {:ok, schema} =
+      Application.app_dir(:compounds, "priv/json_schema/compounds_schema.json")
+      |> File.read()
 
     schema
     |> Poison.decode!()
     |> JsonXema.new()
-  end
-
-  def is_valid_compound_schema?(compound) when is_binary(compound) do
-    data = compound
-    |> Poison.decode!()
-
-    JsonXema.valid?(get_compound_schema(), data)
-  end
-
-  def is_valid_compound_schema?(%Compound{} = compound) do
-    JsonXema.valid?(get_compound_schema(), compound)
-  end
-
-  def is_valid_compound_schema?(compounds) do
-    JsonXema.valid?(get_compound_schema(), compounds)
   end
 
   @doc """
@@ -110,6 +135,7 @@ defmodule Compounds.Datasets do
     |> Repo.update()
   end
 
+  @spec upsert_compound(any) :: any
   @doc """
   Upserts a compound.
 
@@ -124,7 +150,17 @@ defmodule Compounds.Datasets do
   """
 
   def upsert_compound([%{} | _rest] = compounds) when is_list(compounds) do
-    Repo.insert_all(Compound, compounds, on_conflict: :replace_all, conflict_target: :id)
+    compounds =
+      compounds
+      |> Enum.map(fn data ->
+        %Compound{}
+        |> Compound.changeset(data)
+      end)
+      |> Enum.to_list()
+
+    Repo.transaction(fn ->
+      Enum.each(compounds, &Repo.insert(&1, on_conflict: :replace_all, conflict_target: :id))
+    end)
   end
 
   def upsert_compound(attrs) do
@@ -132,6 +168,7 @@ defmodule Compounds.Datasets do
     |> Compound.changeset(attrs)
     |> Repo.insert_or_update()
   end
+
   @doc """
   Deletes a compound.
 
@@ -160,7 +197,6 @@ defmodule Compounds.Datasets do
   def change_compound(%Compound{} = compound, attrs \\ %{}) do
     Compound.changeset(compound, attrs)
   end
-
 
   @doc """
   Returns the list of assay_results.
@@ -255,5 +291,4 @@ defmodule Compounds.Datasets do
   def change_assay_result(%AssayResult{} = assay_result, attrs \\ %{}) do
     AssayResult.changeset(assay_result, attrs)
   end
-
 end

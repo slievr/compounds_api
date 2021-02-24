@@ -33,6 +33,16 @@ defmodule CompoundsWeb.CompoundController do
     end
   end
 
+  def bulk_upsert(conn, %{"_json" => [%{} | _rest] = compounds}) when is_list(compounds) do
+    with :ok <- Datasets.validate_compound_schema(compounds),
+    {:ok, _res} <- Datasets.upsert_compound(compounds) do
+      send_resp(conn, :no_content, "")
+    else
+      {:error, %JsonXema.ValidationError{} = error} -> send_resp(conn, 400, Exception.message(error))
+      {:error, error} -> send_resp(conn, 409, error)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     compound = Datasets.get_compound!(id)
 

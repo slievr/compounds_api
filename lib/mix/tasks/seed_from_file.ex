@@ -26,10 +26,10 @@ defmodule Mix.Tasks.Compounds.SeedFromFile do
 
   defp load_data(file_path) do
     with data <- read_json_file(file_path),
-    true <- validate_data(data) do
-      insert_compound(data)
+    :ok <- validate_data(data) do
+      insert_compounds(data)
     else
-      false -> IO.puts("invalid json")
+      {:error, error} -> IO.puts(Exception.message(error))
     end
   end
 
@@ -45,18 +45,13 @@ defmodule Mix.Tasks.Compounds.SeedFromFile do
 
   defp validate_data(compounds) do
     compounds
-    |> Datasets.is_valid_compound_schema?()
+    |> Datasets.validate_compound_schema()
+
   end
 
-  defp insert_compound(compounds) do
+  defp insert_compounds(compounds) do
     compounds
-    |> Enum.map(&compound_json_to_struct/1)
     |> Datasets.upsert_compound()
-  end
-
-  defp compound_json_to_struct(compound_json) do
-    %Compound{}
-    |> Compound.changeset(compound_json)
   end
 
   defp remove_bom(string) do

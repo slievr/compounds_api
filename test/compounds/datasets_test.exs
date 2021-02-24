@@ -6,9 +6,33 @@ defmodule Compounds.DatasetsTest do
   describe "compounds" do
     alias Compounds.Datasets.Compound
 
-    @valid_attrs %{alogp: "some ALogP", image: "some image", molecular_formula: 120.5, molecular_weight: 120.5, num_rings: 120.5, smiles: "some smiles"}
-    @update_attrs %{alogp: "some updated ALogP", image: "some updated image", molecular_formula: 456.7, molecular_weight: 456.7, num_rings: 456.7, smiles: "some updated smiles"}
-    @invalid_attrs %{alogp: nil, image: nil, molecular_formula: nil, molecular_weight: nil, num_rings: nil, smiles: nil}
+    @valid_attrs %{
+      alogp: 12.4,
+      image: "some image",
+      molecular_formula: "some formulae",
+      molecular_weight: 120.5,
+      num_rings: 120,
+      smiles: "some smiles",
+      assay_results: []
+    }
+    @update_attrs %{
+      alogp: 12.6,
+      image: "some updated image",
+      molecular_formula: "updated formulae",
+      molecular_weight: 456.7,
+      num_rings: 456,
+      smiles: "some updated smiles",
+      assay_results: []
+    }
+
+    @invalid_attrs %{
+      alogp: nil,
+      image: nil,
+      molecular_formula: nil,
+      molecular_weight: nil,
+      num_rings: nil,
+      smiles: nil
+    }
 
     def compound_fixture(attrs \\ %{}) do
       {:ok, compound} =
@@ -31,11 +55,11 @@ defmodule Compounds.DatasetsTest do
 
     test "create_compound/1 with valid data creates a compound" do
       assert {:ok, %Compound{} = compound} = Datasets.create_compound(@valid_attrs)
-      assert compound.alogp == "some ALogP"
+      assert compound.alogp == 12.4
       assert compound.image == "some image"
-      assert compound.molecular_formula == 120.5
+      assert compound.molecular_formula == "some formulae"
       assert compound.molecular_weight == 120.5
-      assert compound.num_rings == 120.5
+      assert compound.num_rings == 120
       assert compound.smiles == "some smiles"
     end
 
@@ -46,11 +70,11 @@ defmodule Compounds.DatasetsTest do
     test "update_compound/2 with valid data updates the compound" do
       compound = compound_fixture()
       assert {:ok, %Compound{} = compound} = Datasets.update_compound(compound, @update_attrs)
-      assert compound.alogp == "some updated ALogP"
+      assert compound.alogp == 12.6
       assert compound.image == "some updated image"
-      assert compound.molecular_formula == 456.7
+      assert compound.molecular_formula == "updated formulae"
       assert compound.molecular_weight == 456.7
-      assert compound.num_rings == 456.7
+      assert compound.num_rings == 456
       assert compound.smiles == "some updated smiles"
     end
 
@@ -70,13 +94,64 @@ defmodule Compounds.DatasetsTest do
       compound = compound_fixture()
       assert %Ecto.Changeset{} = Datasets.change_compound(compound)
     end
+
+    @tag :valid
+    test "validate_compound_schema/1 returns true for a valid compound" do
+      compound = %{
+        alogp: 12.4,
+        assay_results: [],
+        compound_id: 832,
+        image: "some image",
+        molecular_formula: "some formulae",
+        molecular_weight: 120.5,
+        num_rings: 120,
+        smiles: "some smiles",
+      }
+      assert Datasets.validate_compound_schema(compound) == :ok
+    end
+
+    @tag :invalid
+    test "validate_compound_schema/1 returns error for an invalid compound" do
+
+      compound = %{
+        alogp: 12.4,
+        assay_results: [],
+        compound_id: "832",
+        image: "some image",
+        molecular_formula: "some formulae",
+        molecular_weight: 120.5,
+        num_rings: 120,
+        smiles: "some smiles",
+      }
+
+      assert Datasets.validate_compound_schema(compound) ==
+               {:error,
+                %JsonXema.ValidationError{
+                  __exception__: true,
+                  message: nil,
+                  reason: %{items: %{0 => %{properties: %{"compound_id" => %{type: "integer", value: "832"}}}}}
+
+                }}
+    end
   end
 
   describe "assay_results" do
     alias Compounds.Datasets.AssayResult
 
-    @valid_attrs %{operator: "some operator", result: "some result", target: "some target", unit: "some unit", value: 42}
-    @update_attrs %{operator: "some updated operator", result: "some updated result", target: "some updated target", unit: "some updated unit", value: 43}
+    @valid_attrs %{
+      operator: "some operator",
+      result: "some result",
+      target: "some target",
+      unit: "some unit",
+      value: 42
+    }
+    @update_attrs %{
+      operator: "some updated operator",
+      result: "some updated result",
+      target: "some updated target",
+      unit: "some updated unit",
+      value: 43
+    }
     @invalid_attrs %{operator: nil, result: nil, target: nil, unit: nil, value: nil}
 
     def assay_result_fixture(attrs \\ %{}) do
@@ -113,7 +188,10 @@ defmodule Compounds.DatasetsTest do
 
     test "update_assay_result/2 with valid data updates the assay_result" do
       assay_result = assay_result_fixture()
-      assert {:ok, %AssayResult{} = assay_result} = Datasets.update_assay_result(assay_result, @update_attrs)
+
+      assert {:ok, %AssayResult{} = assay_result} =
+               Datasets.update_assay_result(assay_result, @update_attrs)
+
       assert assay_result.operator == "some updated operator"
       assert assay_result.result == "some updated result"
       assert assay_result.target == "some updated target"
@@ -123,7 +201,10 @@ defmodule Compounds.DatasetsTest do
 
     test "update_assay_result/2 with invalid data returns error changeset" do
       assay_result = assay_result_fixture()
-      assert {:error, %Ecto.Changeset{}} = Datasets.update_assay_result(assay_result, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Datasets.update_assay_result(assay_result, @invalid_attrs)
+
       assert assay_result == Datasets.get_assay_result!(assay_result.id)
     end
 

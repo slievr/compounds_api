@@ -6,15 +6,12 @@ COPY . /app
 ADD mix.exs mix.lock ./
 RUN mix do deps.get, deps.compile
 
+FROM base as release
 
-FROM base as migrate
+ARG MIX_ENV=prod
+
+RUN mix release compounds
 
 RUN mix ecto.create
 
-CMD ["mix", "ecto.migrate"]
-
-FROM base as release
-
-CMD ["mix", "phx.server"]
-
-
+CMD ["bin/compounds", "start"]

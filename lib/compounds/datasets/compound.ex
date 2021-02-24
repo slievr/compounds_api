@@ -33,7 +33,8 @@ defmodule Compounds.Datasets.Compound do
     |> Enum.map( fn {k,v} ->
       cond do
         k === "compound_id" -> { "id", v}
-        true -> {String.downcase(k),v}
+        is_binary(k) -> {String.downcase(k),v}
+        true -> {k,v}
       end
     end)
     |> Enum.into(%{})

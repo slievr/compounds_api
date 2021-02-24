@@ -9,14 +9,14 @@ defmodule CompoundsWeb.AssayResultControllerTest do
     result: "some result",
     target: "some target",
     unit: "some unit",
-    value: 42
+    value: 42.0
   }
   @update_attrs %{
     operator: "some updated operator",
     result: "some updated result",
     target: "some updated target",
     unit: "some updated unit",
-    value: 43
+    value: 43.0
   }
   @invalid_attrs %{operator: nil, result: nil, target: nil, unit: nil, value: nil}
 
@@ -39,17 +39,17 @@ defmodule CompoundsWeb.AssayResultControllerTest do
   describe "create assay_result" do
     test "renders assay_result when data is valid", %{conn: conn} do
       conn = post(conn, Routes.assay_result_path(conn, :create), assay_result: @create_attrs)
-      assert %{"assay_result_id" => id} = json_response(conn, 201)["data"]
+      assert %{"result_id" => id} = json_response(conn, 201)["data"]
 
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "assay_result_id" => id,
+               "result_id" => id,
                "operator" => "some operator",
                "result" => "some result",
                "target" => "some target",
                "unit" => "some unit",
-               "value" => 42
+               "value" => 42.0
              } = json_response(conn, 200)["data"]
     end
 
@@ -64,17 +64,17 @@ defmodule CompoundsWeb.AssayResultControllerTest do
 
     test "renders assay_result when data is valid", %{conn: conn, assay_result: %{id: id} = assay_result} do
       conn = put(conn, Routes.assay_result_path(conn, :update, assay_result), assay_result: @update_attrs)
-      assert %{"assay_result_id" => ^id} = json_response(conn, 200)["data"]
+      assert %{"result_id" => ^id} = json_response(conn, 200)["data"]
 
       conn = get(conn, Routes.assay_result_path(conn, :show, id))
 
       assert %{
-               "assay_result_id" => id,
+               "result_id" => id,
                "operator" => "some updated operator",
                "result" => "some updated result",
                "target" => "some updated target",
                "unit" => "some updated unit",
-               "value" => 43
+               "value" => 43.0
              } = json_response(conn, 200)["data"]
     end
 

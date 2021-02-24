@@ -16,8 +16,6 @@ defmodule CompoundsWeb.CompoundView do
 
   def render("compound.json", %{compound: %{assay_results: assay_results} = compound})
       when is_list(assay_results) do
-    compound |> IO.inspect()
-
     %{
       compound_id: compound.id,
       smiles: compound.smiles,

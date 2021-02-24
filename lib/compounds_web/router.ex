@@ -9,6 +9,7 @@ defmodule CompoundsWeb.Router do
     pipe_through :api
 
     resources("/compounds", CompoundController)
+    put("/bulk/compounds", CompoundController, :bulk_upsert)
     resources("/assay_results", AssayResultController)
 
   end
