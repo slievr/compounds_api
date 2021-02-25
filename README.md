@@ -30,7 +30,7 @@ iex -S phx.server
 
 #### Docker
 
-The app can be brought up using docker compose `docker-compose up` by default it stands up on local port 6000, this can be configured in the `docker-compose.yml` file.
+The app can be brought up using docker compose `docker-compose up` by default it stands up on local port 4000, this can be configured in the `docker-compose.yml` file.
 
 ## Tests
 
