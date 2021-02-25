@@ -126,14 +126,6 @@ docker run \
 --rm -it compound_seeder
 ```
 
-docker run \
---env DB_USER=postgres \
---env DB_PASS=postgres \
---env DB_NAME=postgres \
---env DB_HOST=localhost \
---network=host
---rm -it compounds
-
 Run the second command inside the directory that the compound files are in as it will be mounted to the container, and set the `SEED_FILE` env var to it's file name e.g. `compounds.json`
 
 ### Example
