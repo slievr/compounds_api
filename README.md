@@ -4,8 +4,8 @@
 
 ### Dependancies
 
-elixir: 1.11.3
-erlang: 23.\*
+- elixir: 1.11.3
+- erlang: 23.\*
 
 alternatively docker can be used
 in which case [docker](https://docs.docker.com/get-docker/), and [docker-compose](https://docs.docker.com/compose/install/) will need to be installed.
