@@ -100,7 +100,7 @@ curl --location --request POST 'localhost:4000/api/assay_results' \
 ```
 
 #### bulk
-PUT /api/bulk/compounds
+- PUT /api/bulk/compounds
 ## Seeding the database
 
 There are two methods of seeding the database, the first and easiest is the bulk endpoint `/api/bulk/compounds` It accepts a json body that conforms to the schema located at `priv/json_schema/compounds_schema.json`
