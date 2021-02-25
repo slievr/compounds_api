@@ -49,12 +49,12 @@ As by default the container is running in prod mode the routes have been added b
 ### routes
 #### compounds
 
-GET /api/compounds
-GET /api/compounds/[id]
-POST /api/compounds
-PATCH /api/compounds/[id]
-PUT /api/compounds/[id]
-DELETE /api/compounds/[id] 
+- GET /api/compounds
+- GET /api/compounds/[id]
+- POST /api/compounds
+- PATCH /api/compounds/[id]
+- PUT /api/compounds/[id]
+- DELETE /api/compounds/[id] 
 
 DELETES will fail if trying to delete compounds with assay_results
 
@@ -76,12 +76,12 @@ curl --location --request POST 'localhost:4000/api/compounds' \
 
 #### assay_results
 
-GET /api/assay_results
-GET /api/assay_results/[id]
-POST /api/assay_results
-PATCH /api/assay_results/[id]
-PUT /api/assay_results/[id]
-DELETE /api/assay_results/[id]
+- GET /api/assay_results
+- GET /api/assay_results/[id]
+- POST /api/assay_results
+- PATCH /api/assay_results/[id]
+- PUT /api/assay_results/[id]
+- DELETE /api/assay_results/[id]
 
 Example POST
 ```
@@ -103,7 +103,7 @@ curl --location --request POST 'localhost:4000/api/assay_results' \
 PUT /api/bulk/compounds
 ## Seeding the database
 
-There are two methods of seeding the database, the first and easiest is the bulk endpoint `/api/bulk/compounds' It accepts a json body that conforms to the schema located at `priv/json_schema/compounds_schema.json`
+There are two methods of seeding the database, the first and easiest is the bulk endpoint `/api/bulk/compounds` It accepts a json body that conforms to the schema located at `priv/json_schema/compounds_schema.json`
 
 The second method of seeding the database is through a mix task this takes the form of
 
