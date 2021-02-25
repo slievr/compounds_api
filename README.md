@@ -42,7 +42,7 @@ docker-compose -f docker-compose-test.yml up --exit-code-from compounds
 
 ## api
 
-A full list of api routes can be obtained by navigating to `/` on the web service. While running the container with `MIX_ENV=test`.
+A full list of api routes can be obtained by navigating to `/` on the web service. While running the container with `MIX_ENV=dev`.
 
 As by default the container is running in prod mode the routes have been added below
 
