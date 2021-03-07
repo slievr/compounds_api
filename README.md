@@ -132,6 +132,7 @@ Run the second command inside the directory that the compound files are in as it
 
 <details>
   <summary>Example curl</summary>
+    
 ```
 curl --location --request PUT 'localhost:4000/api/bulk/compounds' \
 --header 'Content-Type: application/json' \
